@@ -1,68 +1,40 @@
-console.log("Hello");
+// a simple node app for kakao api
 var express = require('express');
-var http = require('http');
-
-
+var app = express();
 var bodyParser = require('body-parser');
 
-var app = express();
-
-app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-app.get('/keyboard', function(req, res){
-    const menu={
-        'type':'buttons',
-        'buttons':['가격조회','수급정보','정보']
-    };
-    res.set({
-        'content-type': 'application/json'
-    }).send(JSON.stringify(menu));
 
+app.get('/keyboard',function(req,res){ // setting keyboard for first open
+  let keyboard = {
+    "type" : "text"
+    /*
+    or button, like this
+    "type" : "buttons",
+    "buttons" : ["btn 1", "btn 2", "btn 3"]
+    */
+  };
+  res.send(keyboard);
 });
 
-app.post('/message',function(req,res){
-    var msg=req.body.content;
-    console.log('전달받은 메시지: '+msg);
-    
-    var send={};
-    switch(msg){
-        case'가격조회':
-            send={
-                'message':{
-                    'text':'가격조회 선택!'
-                }
-            }
-            break;
-        case '수급정보':
-            send={
-                'message':{
-                    'text':'수급정보 선택!'
-                }
-            }
-            break;
-        case '정보':
-            send={
-                'message':{
-                    'text':'이츠톡톡!'
-                },
-                keyboard:{
-                    'type':'buttons',
-                    'buttons':['test1','test2']
-                }
-            }
-            break;
-        default:
-            send={
-                'message':{
-                    'text':'알 수 없음'
-                }
-            }
-            break;
+app.post('/message', function(req,res){
+  let user_key = decodeURIComponent(req.body.user_key); // user's key
+  let type = decodeURIComponent(req.body.type); // message type
+  let content = decodeURIComponent(req.body.content); // user's message
+  console.log(user_key);
+  console.log(type);
+  console.log(content);
+
+  let answer = {
+    "message":{
+      "text":"your message is arrieved server : "+content // in case 'text'
     }
-    res.json(send);
+  }
+  res.send(answer);
+  
 });
 
-http.createServer(app).listen(9090,function(){
-    console.log('서버 실행 중..');
+app.listen(9090,function(){
+  console.log('Connect 9090 port!')
 });
