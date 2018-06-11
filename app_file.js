@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.get('/topic/new',function(req,res){
     res.render('new');
 });
+
 app.get('/topic',function(req,res){
     res.render('view');
 });
